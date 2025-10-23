@@ -5,3 +5,4 @@ node_modules
 backend/src/generated/prisma
 
 .vite
+.DS_STORE
