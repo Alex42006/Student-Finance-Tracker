@@ -12,11 +12,11 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
-  transactions AddTransaction[]
+  transactions Transaction[]
   mealSwipes MealSwipe[]
 }
 
-model AddTransaction {
+model Transaction {
   id Int        @id @default(autoincrement())
   userID Int
   amount Float

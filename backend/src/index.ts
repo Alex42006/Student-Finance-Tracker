@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
-import addTransactionRoutes from "./routes/addTransactionRoutes";
+import transactionRoutes from "./routes/transactionRoutes";
 import mealSwipeRoutes from "./routes/mealSwipeRoutes";
 
 
@@ -16,7 +16,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 app.use("/auth", authRoutes);
-app.use("/transactions", addTransactionRoutes);
+app.use("/transactions", transactionRoutes);
 app.use("/mealswipes", mealSwipeRoutes);
 
 
