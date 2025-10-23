@@ -1,15 +1,31 @@
 # Student-Finance-Tracker
 
 Run backend:
-git clone link
-npm install
-cd backend/db
-npx prisma generate
-cd ../..
-npm run dev
+
+
+1. git clone link
+
+
+2. npm install
+
+
+3. cd backend/db
+
+
+4. npx prisma generate
+
+
+5. cd ../..
+
+
+6. npm run dev
 
 Run frontend:
-cd frontend
-npm run dev
 
-open localhost
+
+1. cd frontend
+
+
+2. npm run dev
+
+3. open localhost
