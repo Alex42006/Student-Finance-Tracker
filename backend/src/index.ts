@@ -2,6 +2,10 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
+import addTransactionRoutes from "./routes/addTransactionRoutes";
+import mealSwipeRoutes from "./routes/mealSwipeRoutes";
+
+
 
 dotenv.config();
 
@@ -12,6 +16,9 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 app.use("/auth", authRoutes);
+app.use("/transactions", addTransactionRoutes);
+app.use("/mealswipes", mealSwipeRoutes);
+
 
 app.get("/", (_req: Request, res: Response) => {
   res.json({ message: "Backend is running!" });
