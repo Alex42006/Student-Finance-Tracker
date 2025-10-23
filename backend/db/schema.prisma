@@ -12,4 +12,25 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  transactions AddTransaction[]
+  mealSwipes MealSwipe[]
+}
+
+model AddTransaction {
+  id Int        @id @default(autoincrement())
+  userID Int
+  amount Float
+  category String 
+  type String 
+  loggedAt DateTime @default(now())
+  user User @relation(fields:[userID],references:[id])
+}
+
+model MealSwipe {
+  id Int @id @default(autoincrement())
+  userID Int 
+  swipesTotal Int 
+  swipesUsed Int @default(0)
+  weekStartDate DateTime @default(now())
+  user User @relation(fields:[userID],references:[id])
 }
