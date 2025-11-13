@@ -3,9 +3,10 @@ import React, { useState } from "react";
 const MealSwipes = () => {
   const [swipesTotal, setSwipesTotal] = useState(14);
   const [swipesUsed, setSwipesUsed] = useState(0);
+  const port = import.meta.env.VITE_BACKEND_PORT;
 
   const handleSave = async () => {
-    await fetch("http://localhost:5000/mealswipes/update", {
+    await fetch(`http://localhost:${port}/mealswipes/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

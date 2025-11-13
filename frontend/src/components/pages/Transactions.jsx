@@ -4,11 +4,12 @@ const Transactions = () => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [type, setType] = useState("expense");
+  const port = import.meta.env.VITE_BACKEND_PORT;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await fetch("http://localhost:5000/transactions/add", {
+    await fetch(`http://localhost:${port}/transactions/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
