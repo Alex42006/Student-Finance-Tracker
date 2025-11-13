@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client";
 
-// CREATE a transaction
+// CREATE transaction
 export const Transaction = async (req: Request, res: Response) => {
   const { userID, amount, category, type } = req.body;
 
@@ -23,8 +23,7 @@ export const Transaction = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-// GET all transactions (optionally filter by userID)
+// GET all transactions
 export const GetAllTransactions = async (req: Request, res: Response) => {
   const { userID } = req.query;
 
@@ -40,8 +39,7 @@ export const GetAllTransactions = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-// GET a single transaction by ID
+// GET single transaction by ID
 export const GetTransactionById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -60,14 +58,12 @@ export const GetTransactionById = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-// UPDATE a transaction (type-safe fix)
+// UPDATE transaction
 export const UpdateTransaction = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { amount, category, type } = req.body;
 
   try {
-    // ✅ build data object dynamically to avoid TypeScript/Prisma type errors
     const data: Record<string, any> = {};
     if (amount !== undefined) data.amount = Number(amount);
     if (category !== undefined) data.category = category;
@@ -91,8 +87,7 @@ export const UpdateTransaction = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-// DELETE a transaction
+// DELETE transaction
 export const DeleteTransaction = async (req: Request, res: Response) => {
   const { id } = req.params;
 
