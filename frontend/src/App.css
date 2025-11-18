@@ -4,3 +4,57 @@
   padding: 2rem;
   text-align: center;
 }
+
+.page-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.page-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.table td {
+  background: rgba(255,255,255,0.15);
+  padding: 10px;
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-delete {
+  background: #ff5252;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #e04646;
+}
