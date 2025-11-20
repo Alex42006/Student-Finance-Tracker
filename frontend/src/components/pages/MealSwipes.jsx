@@ -17,18 +17,38 @@ const MealSwipes = () => {
       }),
     });
   };
-
   return (
-    <div className="mealswipes-container">
-      <h2>Meal Swipes</h2>
-      <div className="mealswipes-card">
+    <div className="page-container">
+      <h1 className="page-title">Meal Swipes</h1>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+          color: "#fff",
+        }}
+      >
         <input
           type="number"
           placeholder="Total Swipes"
           value={swipesTotal}
           onChange={(e) => {
-            const v = e.target.value;
-            setSwipesTotal(v === "" ? "" : Math.max(0, parseInt(v)));
+            const targetValue = e.target.value;
+            if (targetValue === "") {
+              setSwipesTotal("");
+            } else {
+              setSwipesTotal(Math.max(0, parseInt(targetValue, 0)));
+            }
+          }}
+          min="0"
+          style={{
+            padding: "12px",
+            borderRadius: "8px",
+            border: "none",
+            background: "rgba(255,255,255,0.2)",
+            color: "#fff",
+            fontSize: "16px",
           }}
         />
 
@@ -37,19 +57,47 @@ const MealSwipes = () => {
           placeholder="Swipes Used"
           value={swipesUsed}
           onChange={(e) => {
-            const v = e.target.value;
-            setSwipesUsed(v === "" ? "" : Math.max(0, parseInt(v)));
+            const targetValue = e.target.value;
+            if (targetValue === "") {
+              setSwipesUsed("");
+            } else {
+              setSwipesUsed(Math.max(0, parseInt(targetValue, 0)));
+            }
+          }}
+          min="0"
+          style={{
+            padding: "12px",
+            borderRadius: "8px",
+            border: "none",
+            background: "rgba(255,255,255,0.2)",
+            color: "#fff",
+            fontSize: "16px",
           }}
         />
 
-        <p className="mealswipes-remaining">
+        <p style={{ textAlign: "center", fontSize: "18px", fontWeight: 600 }}>
           Remaining: {Math.max(0, swipesTotal - swipesUsed)}
         </p>
 
-        <button onClick={handleSave}>Save</button>
+        <button
+          onClick={handleSave}
+          className="btn"
+          style={{
+            marginTop: 10,
+            alignSelf: "center",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            background: "#4CAF50",
+            color: "#fff",
+            fontWeight: 600,
+            cursor: "pointer",
+            border: "none",
+          }}
+        >
+          Save
+        </button>
       </div>
     </div>
   );
 };
-
 export default MealSwipes;
