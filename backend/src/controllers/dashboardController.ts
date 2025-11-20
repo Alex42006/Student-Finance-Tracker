@@ -103,15 +103,7 @@ export const getDashboard = async (req: Request, res: Response) => {
     const totalSwipes = mealSwipe?.swipesTotal || 0;
     const usedSwipes = mealSwipe?.swipesUsed || 0;
     const remainingSwipes = totalSwipes - usedSwipes;
-
-    // Calculate dining dollars (assuming stored as a transaction category)
-    const diningDollarsTransactions = filteredTransactions.filter(
-      (t) => t.category === "Dining Dollars"
-    );
-    const diningDollars = diningDollarsTransactions.reduce(
-      (sum, t) => sum + (t.type === "income" ? Number(t.amount) : -Number(t.amount)),
-      0
-    );
+    const diningDollars = mealSwipe?.diningDollars || 0;
 
     // Calculate upcoming subscriptions (next 7 days)
     const nextWeek = new Date();

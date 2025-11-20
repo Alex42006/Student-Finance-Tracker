@@ -8,6 +8,7 @@ import Subscriptions from "./components/pages/Subscriptions"
 import ViewUsers from "./components/pages/ViewUsers";
 import ManageUsers from "./components/pages/ManageUsers";
 import Dashboard from './components/pages/Dashboard'
+import FinancialAid from './components/pages/FinancialAid'
 import Navbar from './components/Navbar'
 
 function App() {
@@ -19,9 +20,10 @@ function App() {
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/meal-swipes" element={<MealSwipes />} />
         <Route path="/subscriptions" element={<Subscriptions />} />
-      <Route path="/users" element={<ViewUsers />} />
-      <Route path="/manage-users" element={<ManageUsers />} />
+        <Route path="/users" element={<ViewUsers />} />
+        <Route path="/manage-users" element={<ManageUsers />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/financial-aid" element={<FinancialAid />} />
       </Routes>
     </BrowserRouter>
   )

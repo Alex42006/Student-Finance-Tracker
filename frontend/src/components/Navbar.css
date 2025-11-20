@@ -24,6 +24,7 @@
     color: #fff;
     text-decoration: none;
     transition: color 0.3s;
+    white-space: nowrap;
   }
   
   .navbar-brand:hover {
@@ -49,6 +50,7 @@
     padding: 0.5rem 1rem;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
+    white-space: nowrap;
   }
   
   .navbar-menu a:hover {

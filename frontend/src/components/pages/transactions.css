@@ -21,15 +21,19 @@
   
   .transactions-card input,
   .transactions-card select {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  border: none;
-  background-color: #2a2a2a;
-  color: #fff;
-  box-sizing: border-box;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #2a2a2a;
+    color: #fff;
+    box-sizing: border-box;
   }
 
+  ::placeholder {
+    color: #fff;
+    opacity: 0.8;
+  }  
   
   .transactions-card button {
     padding: 0.75rem 1.5rem;
