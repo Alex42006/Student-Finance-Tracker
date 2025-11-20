@@ -1,0 +1,54 @@
+.mealswipes-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #fff;
+}
+
+.mealswipes-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #fff;
+  }
+  
+  .mealswipes-card {
+    background-color: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .mealswipes-card input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #2a2a2a;
+    color: #fff;
+    box-sizing: border-box;
+  }
+  
+  .mealswipes-card button {
+    padding: 0.75rem 1.5rem;
+    background-color: #646cff;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+
+.mealswipes-card button:hover {
+  background-color: #4c54d9;
+}
+
+.mealswipes-remaining {
+  font-size: 1.2rem;
+  padding-top: 0.5rem;
+}

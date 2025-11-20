@@ -3,6 +3,8 @@ import './LoginSignup.css'
 
 import userIcon from "../../assets/user.png"
 import passwordIcon from "../../assets/password.png"
+const port = import.meta.env.VITE_BACKEND_PORT;
+import { useNavigate } from 'react-router-dom';
 
 export const LoginSignup = () => {
 
@@ -14,8 +16,9 @@ export const LoginSignup = () => {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const navigate = useNavigate();
 
-  const API_URL = 'http://localhost:5002';
+  const API_URL = `http://localhost:${port}`;
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -58,9 +61,7 @@ export const LoginSignup = () => {
             localStorage.setItem('authToken', data.token);
             console.log('Login successful! Token stored.');
             // Redirect to dashboard or home page
-            setTimeout(() => {
-              setMessage({ type: '', text: '' });
-            }, 1500);
+            navigate('/dashboard');
           }
         } else {
           // After successful signup, switch to login

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./MealSwipes.css";
 
 const MealSwipes = () => {
   const [swipesTotal, setSwipesTotal] = useState(14);
@@ -16,7 +17,6 @@ const MealSwipes = () => {
       }),
     });
   };
-
   return (
     <div className="page-container">
       <h1 className="page-title">Meal Swipes</h1>
@@ -100,5 +100,4 @@ const MealSwipes = () => {
     </div>
   );
 };
-
 export default MealSwipes;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./Subscriptions.css";
 
 const Subscriptions = () => {
   const [name, setName] = useState("");
@@ -97,17 +98,13 @@ const Subscriptions = () => {
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);
-    const month = date.getUTCMonth() + 1;
-    const day = date.getUTCDate();
-    const year = date.getUTCFullYear();
-    return `${month}/${day}/${year}`;
+    return `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`;
   };
 
   return (
     <div className="page-container">
       <h1 className="page-title">Subscriptions</h1>
 
-      {/* FORM CARD */}
       <form
         onSubmit={editingId ? handleUpdate : handleAdd}
         style={{
@@ -227,7 +224,6 @@ const Subscriptions = () => {
         Your Subscriptions
       </h3>
 
-      {/* SUBSCRIPTION LIST */}
       <ul style={{ padding: 0, listStyle: "none" }}>
         {subscriptions.map((sub) => (
           <li

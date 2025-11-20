@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Transactions.css";
 
 const Transactions = () => {
   const [amount, setAmount] = useState("");
@@ -28,8 +29,6 @@ const Transactions = () => {
   return (
     <div className="page-container">
       <h1 className="page-title">Transactions</h1>
-
-      {/* SAME FORM — only styling added */}
       <form
         onSubmit={handleSubmit}
         style={{
@@ -48,7 +47,6 @@ const Transactions = () => {
           required
           style={inputStyle}
         />
-
         <input
           type="text"
           placeholder="Category"

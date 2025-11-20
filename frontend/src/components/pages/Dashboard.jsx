@@ -1,0 +1,223 @@
+import React, { useState, useEffect } from 'react';
+import './Dashboard.css';
+
+const Dashboard = () => {
+  const [timeFrame, setTimeFrame] = useState('month'); // 'week', 'month', 'year'
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const port = import.meta.env.VITE_BACKEND_PORT;
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [timeFrame]);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:${port}/dashboard?view=${timeFrame}`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) throw new Error('Failed to fetch dashboard data');
+      
+      const data = await response.json();
+      setDashboardData(data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div className="dashboard-loading">Loading dashboard...</div>;
+  if (error) return <div className="dashboard-error">Error: {error}</div>;
+  if (!dashboardData) return null;
+
+  const { summary, charts, recentTransactions, upcomingSubscriptions } = dashboardData;
+
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1>GatorBudget Dashboard</h1>
+        <div className="timeframe-selector">
+          <button 
+            className={timeFrame === 'week' ? 'active' : ''} 
+            onClick={() => setTimeFrame('week')}
+          >
+            Week
+          </button>
+          <button 
+            className={timeFrame === 'month' ? 'active' : ''} 
+            onClick={() => setTimeFrame('month')}
+          >
+            Month
+          </button>
+          <button 
+            className={timeFrame === 'year' ? 'active' : ''} 
+            onClick={() => setTimeFrame('year')}
+          >
+            Year
+          </button>
+        </div>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="summary-cards">
+        <div className="card balance-card">
+          <h3>Total Balance</h3>
+          <p className="card-value">${summary.totalBalance.toFixed(2)}</p>
+          <span className={summary.balanceChange >= 0 ? 'positive' : 'negative'}>
+            {summary.balanceChange >= 0 ? '↑' : '↓'} ${Math.abs(summary.balanceChange).toFixed(2)}
+          </span>
+        </div>
+
+        <div className="card swipes-card">
+          <h3>Meal Swipes</h3>
+          <p className="card-value">{summary.remainingSwipes}</p>
+          <span className="card-subtitle">of {summary.totalSwipes} remaining</span>
+          <div className="progress-bar">
+            <div 
+              className="progress-fill" 
+              style={{ width: `${(summary.remainingSwipes / summary.totalSwipes) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="card dining-card">
+          <h3>Dining Dollars</h3>
+          <p className="card-value">${summary.diningDollars.toFixed(2)}</p>
+          <span className="card-subtitle">Available</span>
+        </div>
+
+        <div className="card subscriptions-card">
+          <h3>Upcoming Payments</h3>
+          <p className="card-value">{summary.upcomingPayments}</p>
+          <span className="card-subtitle">Next 7 days</span>
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      <div className="charts-section">
+        <div className="chart-card income-expense-chart">
+          <h3>Income vs Expenses</h3>
+          <div className="chart-bars">
+            <div className="bar-group">
+              <div className="bar income-bar" style={{ height: `${(charts.income / Math.max(charts.income, charts.expenses)) * 200}px` }}>
+                <span className="bar-label">${charts.income.toFixed(0)}</span>
+              </div>
+              <span className="bar-title">Income</span>
+            </div>
+            <div className="bar-group">
+              <div className="bar expense-bar" style={{ height: `${(charts.expenses / Math.max(charts.income, charts.expenses)) * 200}px` }}>
+                <span className="bar-label">${charts.expenses.toFixed(0)}</span>
+              </div>
+              <span className="bar-title">Expenses</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="chart-card category-chart">
+          <h3>Spending by Category</h3>
+          <div className="category-list">
+            {charts.categories.map((cat, idx) => (
+              <div key={idx} className="category-item">
+                <div className="category-info">
+                  <span className="category-name">{cat.name}</span>
+                  <span className="category-amount">${cat.amount.toFixed(2)}</span>
+                </div>
+                <div className="category-bar">
+                  <div 
+                    className="category-fill" 
+                    style={{ 
+                      width: `${(cat.amount / charts.totalExpenses) * 100}%`,
+                      backgroundColor: cat.color 
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="chart-card budget-chart">
+          <h3>Budget Overview</h3>
+          <div className="budget-list">
+            {charts.budgets.map((budget, idx) => (
+              <div key={idx} className="budget-item">
+                <div className="budget-header">
+                  <span className="budget-name">{budget.category}</span>
+                  <span className="budget-amount">
+                    ${budget.spent.toFixed(2)} / ${budget.limit.toFixed(2)}
+                  </span>
+                </div>
+                <div className="budget-bar">
+                  <div 
+                    className={`budget-fill ${budget.spent > budget.limit ? 'over-budget' : ''}`}
+                    style={{ width: `${Math.min((budget.spent / budget.limit) * 100, 100)}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Tables Section */}
+      <div className="tables-section">
+        <div className="table-card">
+          <h3>Recent Transactions</h3>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentTransactions.map((txn, idx) => (
+                <tr key={idx}>
+                  <td>{new Date(txn.date).toLocaleDateString()}</td>
+                  <td>{txn.description}</td>
+                  <td>{txn.category}</td>
+                  <td className={txn.type === 'income' ? 'positive' : 'negative'}>
+                    {txn.type === 'income' ? '+' : '-'}${Math.abs(txn.amount).toFixed(2)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="table-card">
+          <h3>Upcoming Subscriptions</h3>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Next Payment</th>
+                <th>Amount</th>
+                <th>Frequency</th>
+              </tr>
+            </thead>
+            <tbody>
+              {upcomingSubscriptions.map((sub, idx) => (
+                <tr key={idx}>
+                  <td>{sub.name}</td>
+                  <td>{new Date(sub.nextPayment).toLocaleDateString()}</td>
+                  <td>${sub.amount.toFixed(2)}</td>
+                  <td>{sub.frequency}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
