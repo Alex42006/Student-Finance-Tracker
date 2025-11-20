@@ -1,7 +1,14 @@
 import { Router } from "express";
-import { updateMealSwipes } from "../controllers/mealSwipeController";
+import {
+  getMealSwipeByUser,
+  updateMealSwipes,
+  deleteMealSwipes
+} from "../controllers/mealSwipeController";
 
 const router = Router();
+
+router.get("/getMealSwipeByUser/:userID", getMealSwipeByUser);
 router.post("/update", updateMealSwipes);
+router.delete("/delete/:id", deleteMealSwipes);
 
 export default router;

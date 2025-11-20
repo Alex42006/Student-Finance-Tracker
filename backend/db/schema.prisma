@@ -16,6 +16,7 @@ model User {
   transactions Transaction[]
   mealSwipes MealSwipe[]
   subscriptions Subscription[]
+  financialAid FinancialAid[]
 }
 
 model Transaction {
@@ -35,6 +36,7 @@ model MealSwipe {
   swipesUsed Int @default(0)
   weekStartDate DateTime @default(now())
   user User @relation(fields:[userID],references:[id])
+  diningDollars Int @default(0)
 }
 
 model Subscription {
@@ -46,4 +48,29 @@ model Subscription {
   description String?
   firstPaymentDate DateTime
   user User @relation(fields:[userID],references:[id])
+}
+
+model FinancialAid {
+  id               Int       @id @default(autoincrement())
+  userID           Int
+  aidType          String
+  amountAwarded    Float
+  termSeason       TermSeason
+  termYear         Int
+  disbursementDate DateTime
+  repeats          Boolean   @default(false)
+  repeatInterval   RepeatInterval?
+  user User @relation(fields: [userID], references: [id])
+}
+
+enum TermSeason {
+  FALL
+  SPRING
+  SUMMER
+}
+
+enum RepeatInterval {
+  SEMESTER
+  YEAR
+  MONTH
 }

@@ -12,7 +12,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/transactions" className="navbar-brand">
+        <Link to="/dashboard" className="navbar-brand">
           Finance Tracker
         </Link>
         <ul className="navbar-menu">
@@ -42,10 +42,26 @@ const Navbar = () => {
           </li>
           <li>
             <Link 
+              to="/financial-aid" 
+              className={location.pathname === '/financial-aid' ? 'active' : ''}
+            >
+              Financial Aid
+            </Link>
+          </li>
+          <li>
+            <Link 
               to="/subscriptions" 
               className={location.pathname === '/subscriptions' ? 'active' : ''}
             >
               Subscriptions
+            </Link>
+          </li>
+          <li>
+            <Link 
+              to="/manage-users" 
+              className={location.pathname === '/manage-users' ? 'active' : ''}
+            >
+              Manage Users
             </Link>
           </li>
         </ul>

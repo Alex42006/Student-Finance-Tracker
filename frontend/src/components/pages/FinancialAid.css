@@ -1,0 +1,67 @@
+.fa-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  .fa-form input,
+  .fa-form select {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    flex: 1 1 160px;
+  }
+  
+  .fa-button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #4caf50;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .fa-title {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  
+  .fa-list {
+    padding: 0;
+    list-style: none;
+  }
+  
+  .fa-item {
+    background: rgba(255,255,255,0.15);
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .fa-actions button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+  }
+  
+  .edit-btn {
+    background: #2196f3;
+  }
+  
+  .delete-btn {
+    background: #ff5252;
+  }
+  
