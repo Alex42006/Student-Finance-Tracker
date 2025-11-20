@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Transactions.css";
 
 const Transactions = () => {
   const [amount, setAmount] = useState("");
@@ -13,7 +14,7 @@ const Transactions = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userID: 1, 
+        userID: 1,
         amount: parseFloat(amount),
         category,
         type,
@@ -24,10 +25,11 @@ const Transactions = () => {
     setCategory("");
     setType("expense");
   };
+
   return (
-    <div>
+    <div className="transactions-container">
       <h2>Transactions</h2>
-      <form onSubmit={handleSubmit}>
+      <form className="transactions-card" onSubmit={handleSubmit}>
         <input
           type="number"
           placeholder="Amount"
@@ -35,6 +37,7 @@ const Transactions = () => {
           onChange={(e) => setAmount(e.target.value)}
           required
         />
+
         <input
           type="text"
           placeholder="Category"
@@ -42,13 +45,16 @@ const Transactions = () => {
           onChange={(e) => setCategory(e.target.value)}
           required
         />
+
         <select value={type} onChange={(e) => setType(e.target.value)}>
           <option value="expense">Expense</option>
           <option value="income">Income</option>
         </select>
+
         <button type="submit">Add Transaction</button>
       </form>
     </div>
   );
 };
+
 export default Transactions;

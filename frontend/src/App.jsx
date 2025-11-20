@@ -5,17 +5,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Transactions from './components/pages/Transactions'
 import MealSwipes from './components/pages/MealSwipes'
 import Subscriptions from "./components/pages/Subscriptions"
+import Dashboard from './components/pages/Dashboard'
+import Navbar from './components/Navbar'
 
 function App() {
   return (
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<LoginSignup />} />
-      <Route path="/transactions" element={<Transactions />} />
-      <Route path="/meal-swipes" element={<MealSwipes />} />
-      <Route path="/subscriptions" element={<Subscriptions />} />
-    </Routes>
-  </BrowserRouter>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<LoginSignup />} />
+        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/meal-swipes" element={<MealSwipes />} />
+        <Route path="/subscriptions" element={<Subscriptions />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

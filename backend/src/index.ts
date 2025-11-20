@@ -5,7 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import mealSwipeRoutes from "./routes/mealSwipeRoutes";
 import subscriptionRoutes from "./routes/subscriptionRoutes"
-
+import dashboardRoutes from "./routes/dashboardRoutes"
 
 
 dotenv.config();
@@ -23,6 +23,7 @@ app.use("/auth", authRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/mealswipes", mealSwipeRoutes);
 app.use("/subscriptions", subscriptionRoutes);
+app.use("/dashboard", dashboardRoutes)
 
 
 app.get("/", (_req: Request, res: Response) => {

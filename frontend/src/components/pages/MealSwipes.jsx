@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./MealSwipes.css";
 
 const MealSwipes = () => {
   const [swipesTotal, setSwipesTotal] = useState(14);
@@ -10,46 +11,45 @@ const MealSwipes = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userID: 1, 
+        userID: 1,
         swipesTotal,
         swipesUsed,
       }),
     });
   };
+
   return (
-    <div>
+    <div className="mealswipes-container">
       <h2>Meal Swipes</h2>
-      <input
-        type="number"
-        placeholder="Total Swipes"
-        value={swipesTotal}
-        onChange={(e) => {
-          const targetValue = e.target.value;
-          if(targetValue===""){
-            setSwipesTotal("");
-          } else {
-            setSwipesTotal(Math.max(0,parseInt(targetValue,0)))
-          }
-        }}
-        min="0"
-      />
-      <input
-        type="number"
-        placeholder="Swipes Used"
-        value={swipesUsed}
-        onChange={(e) => {
-          const targetValue = e.target.value;
-          if(targetValue===""){
-            setSwipesUsed("");
-          } else {
-            setSwipesUsed(Math.max(0,parseInt(targetValue,0)))
-          }
-        }}
-        min="0"
-      />
-      <p>Remaining: {Math.max(0, swipesTotal - swipesUsed)}</p>
-      <button onClick={handleSave}>Save</button>
+      <div className="mealswipes-card">
+        <input
+          type="number"
+          placeholder="Total Swipes"
+          value={swipesTotal}
+          onChange={(e) => {
+            const v = e.target.value;
+            setSwipesTotal(v === "" ? "" : Math.max(0, parseInt(v)));
+          }}
+        />
+
+        <input
+          type="number"
+          placeholder="Swipes Used"
+          value={swipesUsed}
+          onChange={(e) => {
+            const v = e.target.value;
+            setSwipesUsed(v === "" ? "" : Math.max(0, parseInt(v)));
+          }}
+        />
+
+        <p className="mealswipes-remaining">
+          Remaining: {Math.max(0, swipesTotal - swipesUsed)}
+        </p>
+
+        <button onClick={handleSave}>Save</button>
+      </div>
     </div>
   );
 };
+
 export default MealSwipes;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./Subscriptions.css";
 
 const Subscriptions = () => {
   const [name, setName] = useState("");
@@ -87,19 +88,14 @@ const Subscriptions = () => {
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);
-    const month = date.getUTCMonth() + 1;
-    const day = date.getUTCDate();
-    const year = date.getUTCFullYear();
-    return `${month}/${day}/${year}`;
+    return `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`;
   };
-  
-  
 
   return (
-    <div>
+    <div className="subscriptions-container">
       <h2>Subscriptions</h2>
 
-      <form onSubmit={editingId ? handleUpdate : handleAdd}>
+      <form className="subscriptions-form" onSubmit={editingId ? handleUpdate : handleAdd}>
         <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
         <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
         <select value={billingCycle} onChange={(e) => setBillingCycle(e.target.value)}>
@@ -108,17 +104,22 @@ const Subscriptions = () => {
           <option value="yearly">Yearly</option>
         </select>
         <input type="text" placeholder="Description (optional)" value={description} onChange={(e) => setDescription(e.target.value)} />
-        <input type="date" placeholder="First Payment Date" value={firstPaymentDate} onChange={(e) => setFirstPaymentDate(e.target.value)} required />
+        <input type="date" value={firstPaymentDate} onChange={(e) => setFirstPaymentDate(e.target.value)} required />
         <button type="submit">{editingId ? "Update Subscription" : "Add Subscription"}</button>
       </form>
 
       <h3>Your Subscriptions</h3>
-      <ul>
+      <ul className="subscriptions-list">
         {subscriptions.map((sub) => (
           <li key={sub.id}>
-            {sub.name} - ${sub.amount} ({sub.billingCycle}) - Subscription start date: {formatDate(sub.firstPaymentDate)}
-            <button onClick={() => handleEdit(sub)}>Edit</button>
-            <button onClick={() => handleDelete(sub.id)}>Delete</button>
+            <div>
+              {sub.name} – ${sub.amount} ({sub.billingCycle})  
+              – Start: {formatDate(sub.firstPaymentDate)}
+            </div>
+            <div>
+              <button className="subscriptions-edit" onClick={() => handleEdit(sub)}>Edit</button>
+              <button className="subscriptions-delete" onClick={() => handleDelete(sub.id)}>Delete</button>
+            </div>
           </li>
         ))}
       </ul>
