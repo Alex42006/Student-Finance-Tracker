@@ -32,6 +32,17 @@ const Navbar = () => {
               Transactions
             </Link>
           </li>
+
+          {/* NEW DINING TAB — ONLY CHANGE ADDED */}
+          <li>
+            <Link 
+              to="/dining" 
+              className={location.pathname === '/dining' ? 'active' : ''}
+            >
+              Dining Expenses
+            </Link>
+          </li>
+
           <li>
             <Link 
               to="/meal-swipes" 
