@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client";
 
-// CREATE transaction
 export const Transaction = async (req: Request, res: Response) => {
-  const { userID, amount, category, type } = req.body;
+  const { userID, amount, category, type, loggedAt } = req.body;
 
   if (!userID || !amount || !category || !type) {
     return res.status(400).json({ error: "All fields are required" });
@@ -11,7 +10,13 @@ export const Transaction = async (req: Request, res: Response) => {
 
   try {
     const transaction = await prisma.transaction.create({
-      data: { userID: Number(userID), amount: Number(amount), category, type },
+      data: {
+        userID: Number(userID),
+        amount: Number(amount),
+        category,
+        type,
+        loggedAt: loggedAt ? new Date(loggedAt) : new Date()
+      },
     });
 
     res.status(201).json({
@@ -23,7 +28,7 @@ export const Transaction = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-// GET all transactions
+
 export const GetAllTransactions = async (req: Request, res: Response) => {
   const { userID } = req.query;
 
@@ -39,7 +44,7 @@ export const GetAllTransactions = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-// GET single transaction by ID
+
 export const GetTransactionById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -58,16 +63,17 @@ export const GetTransactionById = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-// UPDATE transaction
+
 export const UpdateTransaction = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { amount, category, type } = req.body;
+  const { amount, category, type, loggedAt } = req.body;
 
   try {
     const data: Record<string, any> = {};
     if (amount !== undefined) data.amount = Number(amount);
     if (category !== undefined) data.category = category;
     if (type !== undefined) data.type = type;
+    if (loggedAt !== undefined) data.loggedAt = new Date(loggedAt);
 
     if (Object.keys(data).length === 0) {
       return res.status(400).json({ error: "No valid fields provided to update" });
@@ -87,7 +93,7 @@ export const UpdateTransaction = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-// DELETE transaction
+
 export const DeleteTransaction = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -102,4 +108,3 @@ export const DeleteTransaction = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-

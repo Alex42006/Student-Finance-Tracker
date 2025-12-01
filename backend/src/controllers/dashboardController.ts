@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client";
 
-// Helper function to get date ranges
 const getDateRange = (view: string) => {
   const now = new Date();
   let startDate: Date;
@@ -33,25 +32,21 @@ export const getDashboard = async (req: Request, res: Response) => {
     const view = (req.query.view as string) || "month";
     const { startDate, endDate } = getDateRange(view);
 
-    // Fetch all data in parallel
     const [
       transactions,
       mealSwipe,
       subscriptions,
     ] = await Promise.all([
-      // Get all transactions for the user
       prisma.transaction.findMany({
         where: {
           userID: Number(userID),
         },
       }),
 
-      // Get meal swipes
       prisma.mealSwipe.findFirst({
         where: { userID: Number(userID) },
       }),
 
-      // Get subscriptions
       prisma.subscription.findMany({
         where: { userID: Number(userID) },
       }),
@@ -62,7 +57,6 @@ export const getDashboard = async (req: Request, res: Response) => {
       return transactionDate >= startDate && transactionDate <= endDate;
     });
 
-    // Calculate summary metrics
     const income = filteredTransactions
       .filter((t) => t.type === "income")
       .reduce((sum, t) => sum + Number(t.amount), 0);
@@ -73,7 +67,6 @@ export const getDashboard = async (req: Request, res: Response) => {
 
     const totalBalance = income - expenses;
 
-    // Calculate balance change (compare to previous period)
     const previousStartDate = new Date(startDate);
     if (view === "week") {
       previousStartDate.setDate(startDate.getDate() - 7);
@@ -99,13 +92,11 @@ export const getDashboard = async (req: Request, res: Response) => {
     const previousBalance = previousIncome - previousExpenses;
     const balanceChange = totalBalance - previousBalance;
 
-    // Calculate meal swipes remaining
     const totalSwipes = mealSwipe?.swipesTotal || 0;
     const usedSwipes = mealSwipe?.swipesUsed || 0;
     const remainingSwipes = totalSwipes - usedSwipes;
     const diningDollars = mealSwipe?.diningDollars || 0;
 
-    // Calculate upcoming subscriptions (next 7 days)
     const nextWeek = new Date();
     nextWeek.setDate(nextWeek.getDate() + 7);
 
@@ -114,7 +105,6 @@ export const getDashboard = async (req: Request, res: Response) => {
       return nextPayment <= nextWeek && nextPayment >= new Date();
     }).length;
 
-    // Group expenses by category
     const categoryMap = new Map<string, number>();
     filteredTransactions
       .filter((t) => t.type === "expense")
@@ -123,24 +113,21 @@ export const getDashboard = async (req: Request, res: Response) => {
         categoryMap.set(t.category, current + Number(t.amount));
       });
 
-    const categories = Array.from(categoryMap.entries())
+      const categories = Array.from(categoryMap.entries())
       .map(([name, amount]) => ({
         name,
         amount,
-        color: getCategoryColor(name),
+        color: getCategoryColor(name || "Other"),
       }))
       .sort((a, b) => b.amount - a.amount)
-      .slice(0, 5); // Top 5 categories
+      .slice(0, 5);    
 
-    // Since you don't have a Budget model yet, create placeholder budget data
-    // You can add this model later following your schema pattern
     const budgetData = categories.map((cat) => ({
       category: cat.name,
-      limit: cat.amount * 1.5, // Placeholder: 150% of current spending
+      limit: cat.amount * 1.5,
       spent: cat.amount,
     }));
 
-    // Get recent transactions (last 10)
     const recentTransactions = filteredTransactions
       .sort((a, b) => new Date(b.loggedAt).getTime() - new Date(a.loggedAt).getTime())
       .slice(0, 10)
@@ -164,7 +151,6 @@ export const getDashboard = async (req: Request, res: Response) => {
       .sort((a, b) => a.nextPayment.getTime() - b.nextPayment.getTime())
       .slice(0, 5);
 
-    // Build response
     const dashboardData = {
       summary: {
         totalBalance,
@@ -192,12 +178,10 @@ export const getDashboard = async (req: Request, res: Response) => {
   }
 };
 
-// Helper function to calculate next payment date based on billing cycle
 const getNextPaymentDate = (firstPayment: Date, billingCycle: string): Date => {
   const now = new Date();
   const first = new Date(firstPayment);
   
-  // If first payment is in the future, return it
   if (first > now) return first;
   
   let next = new Date(first);
@@ -227,19 +211,30 @@ const getNextPaymentDate = (firstPayment: Date, billingCycle: string): Date => {
   return next;
 };
 
-// Helper function to assign colors to categories
-const getCategoryColor = (category: string): string => {
-  const colors: { [key: string]: string } = {
-    Food: "#4caf50",
-    Transport: "#2196f3",
-    Entertainment: "#ff9800",
-    Shopping: "#e91e63",
-    Utilities: "#9c27b0",
-    Education: "#00bcd4",
-    Healthcare: "#f44336",
-    "Dining Dollars": "#ffc107",
-    Other: "#607d8b",
-  };
+const getCategoryColor = (() => {
+  const palette = [
+    "#4caf50",
+    "#2196f3",
+    "#ff9800",
+    "#e91e63",
+    "#9c27b0",
+    "#00bcd4",
+    "#ffc107",
+    "#8bc34a",
+    "#f44336",
+    "#009688",
+  ];
 
-  return colors[category] || "#757575";
-};
+  const map = new Map<string, string>();
+  let index = 0;
+
+  return (categoryInput?: string): string => {
+    const category: string = categoryInput ?? "Other";
+    if (!map.has(category)) {
+      map.set(category, palette[index % palette.length] as string);
+      index++;
+    }
+    return map.get(category)!;
+  };
+})();
+
