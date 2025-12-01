@@ -7,6 +7,7 @@ import mealSwipeRoutes from "./routes/mealSwipeRoutes";
 import subscriptionRoutes from "./routes/subscriptionRoutes"
 import dashboardRoutes from "./routes/dashboardRoutes"
 import financialAidRoutes from "./routes/financialAidRoutes";
+import budgetsRoutes from "./routes/budgetRoutes";
 
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use("/mealswipes", mealSwipeRoutes);
 app.use("/subscriptions", subscriptionRoutes);
 app.use("/dashboard", dashboardRoutes)
 app.use("/financialAid", financialAidRoutes);
+app.use("/budgets", budgetsRoutes);
 
 
 app.get("/", (_req: Request, res: Response) => {
