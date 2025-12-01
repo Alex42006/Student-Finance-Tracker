@@ -13,8 +13,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
+html, body {
   margin: 0;
-  height: 100vh;
-  background: linear-gradient(#0015ff, #ff7b00)
+  padding: 0;
+  min-height: 100%;
 }
+
+html {
+  background: linear-gradient(#0015ff, #ff7b00);
+  background-attachment: fixed;
+}
+

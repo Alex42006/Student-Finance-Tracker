@@ -5,13 +5,14 @@ const Transactions = () => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [type, setType] = useState("expense");
+  const [loggedAt, setLoggedAt] = useState("");
   const [transactions, setTransactions] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const port = import.meta.env.VITE_BACKEND_PORT;
   const userID = 1;
 
-  // Fetch all transactions
   const fetchTransactions = async () => {
     const res = await fetch(
       `http://localhost:${port}/transactions?userID=${userID}`
@@ -24,31 +25,29 @@ const Transactions = () => {
     fetchTransactions();
   }, []);
 
-  // CREATE or UPDATE
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const body = {
+      amount: parseFloat(amount),
+      category,
+      type,
+      loggedAt: loggedAt ? new Date(loggedAt) : new Date()
+    };
+
     if (editingId) {
-      // Update transaction
       await fetch(`http://localhost:${port}/transactions/${editingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: parseFloat(amount),
-          category,
-          type,
-        }),
+        body: JSON.stringify(body),
       });
     } else {
-      // Create transaction
       await fetch(`http://localhost:${port}/transactions/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userID,
-          amount: parseFloat(amount),
-          category,
-          type,
+          ...body
         }),
       });
     }
@@ -57,7 +56,6 @@ const Transactions = () => {
     fetchTransactions();
   };
 
-  // DELETE
   const handleDelete = async (id) => {
     await fetch(`http://localhost:${port}/transactions/${id}`, {
       method: "DELETE",
@@ -65,20 +63,21 @@ const Transactions = () => {
     fetchTransactions();
   };
 
-  // BEGIN EDIT
   const handleEdit = (t) => {
     setEditingId(t.id);
     setAmount(t.amount);
     setCategory(t.category);
     setType(t.type);
+    setLoggedAt(t.loggedAt ? t.loggedAt.split("T")[0] : "");
   };
 
-  // RESET FORM
   const resetForm = () => {
     setAmount("");
     setCategory("");
     setType("expense");
+    setLoggedAt("");
     setEditingId(null);
+    setShowSuggestions(false);
   };
 
   const formatDate = (iso) => {
@@ -86,117 +85,104 @@ const Transactions = () => {
     return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
   };
 
-  return (
-    <div className="page-container">
-      <h1 className="page-title">Transactions</h1>
+  const categories = [...new Set(transactions.map(t => t.category))].sort();
+  const filteredSuggestions = categories.filter(cat =>
+    cat.toLowerCase().includes(category.toLowerCase())
+  );
 
-      {/* FORM */}
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 12,
-          marginBottom: 20,
-          color: "#fff",
-        }}
-      >
+  return (
+    <div className="transactions-page">
+      <h1 className="transactions-title">Transactions</h1>
+
+      <form className="transactions-form" onSubmit={handleSubmit}>
         <input
           type="number"
+          className="transactions-input"
           placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           required
-          style={inputStyle}
         />
 
+      <div className="category-wrapper">
         <input
           type="text"
+          className="transactions-input"
           placeholder="Category"
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={(e) => {
+            setCategory(e.target.value);
+            setShowSuggestions(true);
+          }}
+          onFocus={() => setShowSuggestions(true)}
+          onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
           required
-          style={inputStyle}
         />
 
+        {showSuggestions && (
+          <ul className="category-suggestions">
+            {(category === "" ? categories : categories.filter(cat =>
+              cat.toLowerCase().includes(category.toLowerCase())
+            )).map((cat, idx) => (
+              <li
+                key={idx}
+                onMouseDown={() => {
+                  setCategory(cat);
+                  setShowSuggestions(false);
+                }}
+              >
+                {cat}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
         <select
+          className="transactions-input"
           value={type}
           onChange={(e) => setType(e.target.value)}
-          style={inputStyle}
         >
           <option value="expense">Expense</option>
           <option value="income">Income</option>
         </select>
 
-        <button type="submit" style={addButton}>
+        <input
+          type="date"
+          className="transactions-input"
+          value={loggedAt}
+          onChange={(e) => setLoggedAt(e.target.value)}
+        />
+
+        <button type="submit" className="transactions-submit">
           {editingId ? "Update Transaction" : "Add Transaction"}
         </button>
       </form>
 
-      {/* LIST TITLE */}
-      <h3
-        style={{
-          textAlign: "center",
-          color: "#fff",
-          marginBottom: 12,
-          fontSize: 20,
-        }}
-      >
-        Your Transactions
-      </h3>
+      <h3 className="transactions-subtitle">Your Transactions</h3>
 
-      {/* TRANSACTION LIST */}
-      <ul style={{ padding: 0, listStyle: "none" }}>
+      <ul className="transactions-list">
         {transactions.map((t) => (
-          <li
-            key={t.id}
-            style={{
-              background: "rgba(255,255,255,0.15)",
-              padding: "14px 18px",
-              borderRadius: 12,
-              marginBottom: 12,
-              color: "#fff",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontSize: "16px",
-            }}
-          >
+          <li key={t.id} className="transactions-item">
             <span>
-              <strong>${t.amount}</strong> — {t.category} ({t.type})  
+              <strong>${t.amount}</strong> — {t.category} ({t.type})
               <br />
-              <span style={{ opacity: 0.7 }}>
+              <span className="transactions-date">
                 {formatDate(t.loggedAt)}
               </span>
             </span>
 
-            <div style={{ display: "flex", gap: 10 }}>
+            <div className="transactions-actions">
               <button
                 onClick={() => handleEdit(t)}
-                className="btn"
-                style={{
-                  padding: "6px 12px",
-                  background: "#2196F3",
-                  borderRadius: 6,
-                  color: "#fff",
-                  border: "none",
-                  cursor: "pointer",
-                }}
+                className="transactions-btn edit-btn"
               >
                 Edit
               </button>
 
               <button
                 onClick={() => handleDelete(t.id)}
-                className="btn btn-delete"
-                style={{
-                  padding: "6px 12px",
-                  background: "#ff5252",
-                  borderRadius: 6,
-                  color: "#fff",
-                  border: "none",
-                  cursor: "pointer",
-                }}
+                className="transactions-btn delete-btn"
               >
                 Delete
               </button>
@@ -206,28 +192,6 @@ const Transactions = () => {
       </ul>
     </div>
   );
-};
-
-// INPUT STYLES
-const inputStyle = {
-  padding: "12px",
-  borderRadius: "8px",
-  border: "none",
-  background: "rgba(255,255,255,0.2)",
-  color: "#fff",
-  flex: "1 1 160px",
-};
-
-// BUTTON STYLE
-const addButton = {
-  padding: "12px 20px",
-  borderRadius: "8px",
-  border: "none",
-  background: "#4CAF50",
-  color: "#fff",
-  fontWeight: 600,
-  cursor: "pointer",
-  flex: "1 1 160px",
 };
 
 export default Transactions;
