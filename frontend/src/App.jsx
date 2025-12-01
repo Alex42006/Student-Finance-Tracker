@@ -5,13 +5,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Transactions from './components/pages/Transactions'
 import MealSwipes from './components/pages/MealSwipes'
 import Subscriptions from "./components/pages/Subscriptions"
-import ViewUsers from "./components/pages/ViewUsers";
-import ManageUsers from "./components/pages/ManageUsers";
+import ViewUsers from "./components/pages/ViewUsers"
+import ManageUsers from "./components/pages/ManageUsers"
 import Dashboard from './components/pages/Dashboard'
 import FinancialAid from './components/pages/FinancialAid'
 import Navbar from './components/Navbar'
 import Budgets from "./components/pages/Budgets.jsx";
-
+import DiningExpenses from "./components/pages/DiningExpenses"
 
 function App() {
   return (
@@ -27,6 +27,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/financial-aid" element={<FinancialAid />} />
         <Route path="/budgets" element={<Budgets />} />
+        <Route path="/dining" element={<DiningExpenses />} /> 
       </Routes>
     </BrowserRouter>
   )

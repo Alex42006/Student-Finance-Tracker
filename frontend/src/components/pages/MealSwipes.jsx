@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./MealSwipes.css";
 
 const MealSwipes = () => {
-  const [swipesTotal, setSwipesTotal] = useState("");
-  const [swipesUsed, setSwipesUsed] = useState("");
-  const [diningDollars, setDiningDollars] = useState("");
+  const [formSwipesTotal, setFormSwipesTotal] = useState("");
+  const [formSwipesUsed, setFormSwipesUsed] = useState("");
+  const [formDiningDollars, setFormDiningDollars] = useState("");
+
+  const [dbSwipesTotal, setDbSwipesTotal] = useState("");
+  const [dbSwipesUsed, setDbSwipesUsed] = useState("");
+  const [dbDiningDollars, setDbDiningDollars] = useState("");
+
   const [mealSwipeId, setMealSwipeId] = useState(null);
 
   const port = import.meta.env.VITE_BACKEND_PORT;
@@ -18,14 +23,24 @@ const MealSwipes = () => {
 
     if (data) {
       setMealSwipeId(data.id);
-      setSwipesTotal(String(data.swipesTotal));
-      setSwipesUsed(String(data.swipesUsed));
-      setDiningDollars(String(data.diningDollars));
+
+      setDbSwipesTotal(String(data.swipesTotal));
+      setDbSwipesUsed(String(data.swipesUsed));
+      setDbDiningDollars(String(data.diningDollars));
+
+      setFormSwipesTotal(String(data.swipesTotal));
+      setFormSwipesUsed(String(data.swipesUsed));
+      setFormDiningDollars(String(data.diningDollars));
     } else {
       setMealSwipeId(null);
-      setSwipesTotal("");
-      setSwipesUsed("");
-      setDiningDollars("");
+
+      setDbSwipesTotal("");
+      setDbSwipesUsed("");
+      setDbDiningDollars("");
+
+      setFormSwipesTotal("");
+      setFormSwipesUsed("");
+      setFormDiningDollars("");
     }
   };
 
@@ -41,9 +56,9 @@ const MealSwipes = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         userID,
-        swipesTotal: Number(swipesTotal || 0),
-        swipesUsed: Number(swipesUsed || 0),
-        diningDollars: Number(diningDollars || 0),
+        swipesTotal: Number(formSwipesTotal || 0),
+        swipesUsed: Number(formSwipesUsed || 0),
+        diningDollars: Number(formDiningDollars || 0),
       }),
     });
 
@@ -58,140 +73,88 @@ const MealSwipes = () => {
     });
 
     setMealSwipeId(null);
-    setSwipesTotal("");
-    setSwipesUsed("");
-    setDiningDollars("");
+
+    setDbSwipesTotal("");
+    setDbSwipesUsed("");
+    setDbDiningDollars("");
+
+    setFormSwipesTotal("");
+    setFormSwipesUsed("");
+    setFormDiningDollars("");
   };
 
-  const remaining =
-    swipesTotal && swipesUsed
-      ? Number(swipesTotal) - Number(swipesUsed)
+  const dbRemaining =
+    dbSwipesTotal && dbSwipesUsed
+      ? Number(dbSwipesTotal) - Number(dbSwipesUsed)
       : 0;
 
   return (
     <div className="page-container">
       <h1 className="page-title">Meal Swipes</h1>
 
-      <form
-        onSubmit={handleSave}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          marginBottom: 20,
-          color: "#fff",
-        }}
-      >
+      <form onSubmit={handleSave} className="mealswipes-form">
         <input
           type="number"
+          className="mealswipes-input"
           placeholder="Total Swipes"
-          value={swipesTotal}
+          value={formSwipesTotal}
           onChange={(e) =>
-            setSwipesTotal(e.target.value === "" ? "" : Number(e.target.value))
-          }
-          style={inputStyle}
-        />
-
-        <input
-          type="number"
-          placeholder="Swipes Used"
-          value={swipesUsed}
-          onChange={(e) =>
-            setSwipesUsed(e.target.value === "" ? "" : Number(e.target.value))
-          }
-          style={inputStyle}
-        />
-
-        <input
-          type="number"
-          placeholder="Dining Dollars"
-          value={diningDollars}
-          onChange={(e) =>
-            setDiningDollars(
+            setFormSwipesTotal(
               e.target.value === "" ? "" : Number(e.target.value)
             )
           }
-          style={inputStyle}
         />
 
-        <p
-          style={{
-            textAlign: "center",
-            fontSize: 18,
-            fontWeight: 600,
-          }}
-        >
-          Remaining Swipes: {remaining}
-        </p>
+        <input
+          type="number"
+          className="mealswipes-input"
+          placeholder="Swipes Used"
+          value={formSwipesUsed}
+          onChange={(e) =>
+            setFormSwipesUsed(
+              e.target.value === "" ? "" : Number(e.target.value)
+            )
+          }
+        />
 
-        <button
-          type="submit"
-          style={{
-            padding: "10px 20px",
-            borderRadius: 8,
-            background: "#4CAF50",
-            color: "#fff",
-            fontWeight: 600,
-            cursor: "pointer",
-            border: "none",
-          }}
-        >
+        <input
+          type="number"
+          className="mealswipes-input"
+          placeholder="Dining Dollars"
+          value={formDiningDollars}
+          onChange={(e) =>
+            setFormDiningDollars(
+              e.target.value === "" ? "" : Number(e.target.value)
+            )
+          }
+        />
+
+        <button type="submit" className="mealswipes-button">
           {mealSwipeId ? "Update Meal Swipes" : "Save Meal Swipes"}
         </button>
 
         {mealSwipeId && (
           <button
             type="button"
+            className="mealswipes-delete"
             onClick={handleDelete}
-            style={{
-              padding: "10px 20px",
-              borderRadius: 8,
-              background: "#ff5252",
-              color: "#fff",
-              fontWeight: 600,
-              cursor: "pointer",
-              border: "none",
-            }}
           >
             Delete Meal Swipe Record
           </button>
         )}
       </form>
 
-      {/* Display Section (like Subscriptions) */}
       {mealSwipeId && (
-        <div
-          style={{
-            background: "rgba(255,255,255,0.15)",
-            padding: "16px 20px",
-            borderRadius: 12,
-            marginTop: 20,
-            color: "#fff",
-            fontSize: "16px",
-            lineHeight: 1.6,
-          }}
-        >
-          <h3 style={{ marginBottom: 10, textAlign: "center" }}>
-            Current Meal Swipe Data
-          </h3>
-
-          <p><strong>Total Swipes:</strong> {swipesTotal}</p>
-          <p><strong>Swipes Used:</strong> {swipesUsed}</p>
-          <p><strong>Remaining Swipes:</strong> {remaining}</p>
-          <p><strong>Dining Dollars Remaining:</strong> ${diningDollars}</p>
+        <div className="mealswipes-display">
+          <h3>Current Meal Swipe Data</h3>
+          <p><strong>Total Swipes:</strong> {dbSwipesTotal}</p>
+          <p><strong>Swipes Used:</strong> {dbSwipesUsed}</p>
+          <p><strong>Remaining Swipes:</strong> {dbRemaining}</p>
+          <p><strong>Dining Dollars Remaining:</strong> ${dbDiningDollars}</p>
         </div>
       )}
     </div>
   );
-};
-
-const inputStyle = {
-  padding: "12px",
-  borderRadius: "8px",
-  border: "none",
-  background: "rgba(255,255,255,0.2)",
-  color: "#fff",
-  fontSize: "16px",
 };
 
 export default MealSwipes;
