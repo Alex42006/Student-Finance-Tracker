@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  transactions Transaction[]
-  mealSwipes MealSwipe[]
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  password      String
+  createdAt     DateTime        @default(now())
+  transactions  Transaction[]
+  mealSwipes    MealSwipe[]
   subscriptions Subscription[]
-  financialAid FinancialAid[]
+  financialAid  FinancialAid[]
+  budgets       Budget[]
 }
+
 
 model Transaction {
   id Int        @id @default(autoincrement())
@@ -73,4 +74,17 @@ enum RepeatInterval {
   SEMESTER
   YEAR
   MONTH
+}
+
+model Budget {
+  id           Int       @id @default(autoincrement())
+  userID       Int
+  category     String
+  limitAmount  Float
+  spentAmount  Float      @default(0)
+  period       String
+  goalAmount   Float?
+  goalDeadline DateTime?
+
+  user User @relation(fields: [userID], references: [id])
 }

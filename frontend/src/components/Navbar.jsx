@@ -75,6 +75,15 @@ const Navbar = () => {
               Manage Users
             </Link>
           </li>
+
+          <li>
+            <Link 
+              to="/budgets" 
+              className={location.pathname === '/budgets' ? 'active' : ''}
+            >
+              Budgets
+            </Link>
+          </li>
         </ul>
       </div>
     </nav>
