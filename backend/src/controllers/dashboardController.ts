@@ -28,7 +28,11 @@ const getDateRange = (view: string) => {
 
 export const getDashboard = async (req: Request, res: Response) => {
   try {
-    const userID = 1;
+    const userID = Number(req.query.userID);
+    if (!userID) {
+      return res.status(400).json({ error: "Missing userID" });
+    }
+
     const view = (req.query.view as string) || "month";
     const { startDate, endDate } = getDateRange(view);
 

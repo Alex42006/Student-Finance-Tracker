@@ -1,0 +1,61 @@
+.dining-page {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #fff;
+  }
+  
+  .dining-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+  }
+  
+  .dining-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .dining-input {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    flex: 1 1 160px;
+  }
+  
+  .dining-submit {
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #4caf50;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1 1 160px;
+  }
+  
+  .dining-summary {
+    background: rgba(255,255,255,0.15);
+    padding: 16px 20px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 18px;
+  }
+  
+  .dining-summary p {
+    margin-bottom: 8px;
+  }
+  
+  .dining-no-budget {
+    opacity: 0.8;
+  }
+  
+  ::placeholder {
+    color: #fff;
+    opacity: 0.8;
+  }
+  

@@ -8,12 +8,14 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const port = import.meta.env.VITE_BACKEND_PORT;
-  const userID = 1;
+  const userID = Number(localStorage.getItem('userID'));
 
-  useEffect(() => {
-    fetchDashboardData();
-    fetchFinancialAid();
-  }, [timeFrame]);
+useEffect(() => {
+  if (!userID) return;  
+  fetchDashboardData();
+  fetchFinancialAid();
+}, [timeFrame, userID]);
+
 
   const fetchFinancialAid = async () => {
     const res = await fetch(`http://localhost:${port}/financialAid?userID=${userID}`);
@@ -24,9 +26,12 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:${port}/dashboard?view=${timeFrame}`, {
-        credentials: 'include'
-      });
+      const response = await fetch(
+        `http://localhost:${port}/dashboard?view=${timeFrame}&userID=${userID}`,
+        {
+          credentials: 'include'
+        }
+      );
       if (!response.ok) throw new Error('Failed to fetch dashboard data');
       const data = await response.json();
       setDashboardData(data);
@@ -37,6 +42,7 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+  
 
   if (loading) return <div className="dashboard-loading">Loading dashboard...</div>;
   if (error) return <div className="dashboard-error">Error: {error}</div>;

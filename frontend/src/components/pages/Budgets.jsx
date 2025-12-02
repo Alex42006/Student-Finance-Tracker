@@ -12,7 +12,7 @@ const Budgets = () => {
   const [editingId, setEditingId] = useState(null);
 
   const port = import.meta.env.VITE_BACKEND_PORT;
-  const userID = 1;
+  const userID = Number(localStorage.getItem('userID'));
 
   // Fetch all budgets
   const fetchBudgets = async () => {
@@ -28,8 +28,8 @@ const Budgets = () => {
   };
 
   useEffect(() => {
-    fetchBudgets();
-  }, []);
+    if (userID) fetchBudgets();
+  }, [userID]);  
 
   // ADD new budget
   const handleAdd = async (e) => {

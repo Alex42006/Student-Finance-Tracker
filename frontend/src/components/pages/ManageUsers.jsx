@@ -1,39 +1,63 @@
-import React, { useState } from "react";
-
-const initialUsers = [
-  { id: 1, name: "Alex", email: "alex@example.com" },
-  { id: 2, name: "Luca", email: "luca@example.com" },
-  { id: 3, name: "Ben", email: "ben@example.com" },
-  { id: 4, name: "Nour", email: "nour@example.com" },
-];
+import React, { useEffect, useState } from "react";
+import "./ManageUsers.css";
 
 export default function ManageUsers() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
 
-  const deleteUser = (id) => {
+  const port = import.meta.env.VITE_BACKEND_PORT;
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+  useEffect(() => {
+    if (!isAdmin) {
+      window.location.href = "/dashboard";
+      return;
+    }
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    const token = localStorage.getItem("authToken");
+
+    const res = await fetch(`http://localhost:${port}/admin/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+    setUsers(data);
+  };
+
+  const deleteUser = async (id) => {
+    const token = localStorage.getItem("authToken");
+
+    await fetch(`http://localhost:${port}/admin/users/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
     setUsers(prev => prev.filter(u => u.id !== id));
   };
 
   return (
-    <div className="page-container">
-      <h1 className="page-title">Manage Users</h1>
+    <div className="manage-users-container">
+      <h1 className="manage-users-title">Manage Users</h1>
 
       {users.map(u => (
-        <div 
-          key={u.id} 
-          style={{
-            background: "rgba(255,255,255,0.15)",
-            padding: "12px 16px",
-            borderRadius: 12,
-            marginBottom: 12,
-            color: "#fff",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}
-        >
-          <span>{u.name} ({u.email})</span>
-          <button className="btn btn-delete" onClick={() => deleteUser(u.id)}>
+        <div key={u.id} className="user-card">
+          <div className="user-info">
+            <strong className="user-email">{u.email}</strong>
+            <span className="created-at">
+              Created: {new Date(u.createdAt).toLocaleDateString()}
+            </span>
+          </div>
+
+          <button 
+            className="delete-user-btn"
+            onClick={() => deleteUser(u.id)}
+          >
             Delete
           </button>
         </div>

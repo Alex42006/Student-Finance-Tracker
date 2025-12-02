@@ -9,6 +9,8 @@ import dashboardRoutes from "./routes/dashboardRoutes"
 import financialAidRoutes from "./routes/financialAidRoutes";
 import budgetsRoutes from "./routes/budgetRoutes";
 import diningExpensesRoutes from "./routes/diningExpensesRoutes";
+import profileRoutes from "./routes/profileRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 dotenv.config();
 
@@ -21,6 +23,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
+app.use("/admin", adminRoutes);
 app.use("/auth", authRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/transactions", diningExpensesRoutes);
@@ -29,6 +32,7 @@ app.use("/subscriptions", subscriptionRoutes);
 app.use("/dashboard", dashboardRoutes)
 app.use("/financialAid", financialAidRoutes);
 app.use("/budgets", budgetsRoutes);
+app.use("/profile", profileRoutes);
 
 
 app.get("/", (_req: Request, res: Response) => {

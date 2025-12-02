@@ -13,7 +13,7 @@ const MealSwipes = () => {
   const [mealSwipeId, setMealSwipeId] = useState(null);
 
   const port = import.meta.env.VITE_BACKEND_PORT;
-  const userID = 1;
+  const userID = Number(localStorage.getItem("userID"));
 
   const fetchMealSwipe = async () => {
     const res = await fetch(
@@ -45,8 +45,10 @@ const MealSwipes = () => {
   };
 
   useEffect(() => {
-    fetchMealSwipe();
-  }, []);
+    if (userID) {
+      fetchMealSwipe();
+    }
+  }, [userID]);
 
   const handleSave = async (e) => {
     e.preventDefault();

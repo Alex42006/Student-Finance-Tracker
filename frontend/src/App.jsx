@@ -12,6 +12,7 @@ import FinancialAid from './components/pages/FinancialAid'
 import Navbar from './components/Navbar'
 import Budgets from "./components/pages/Budgets.jsx";
 import DiningExpenses from "./components/pages/DiningExpenses"
+import Profile from "./components/pages/Profile";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/financial-aid" element={<FinancialAid />} />
         <Route path="/budgets" element={<Budgets />} />
         <Route path="/dining" element={<DiningExpenses />} /> 
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   )

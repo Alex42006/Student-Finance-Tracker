@@ -11,7 +11,7 @@ const Transactions = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const port = import.meta.env.VITE_BACKEND_PORT;
-  const userID = 1;
+  const userID = Number(localStorage.getItem("userID"));
 
   const fetchTransactions = async () => {
     const res = await fetch(
@@ -22,8 +22,8 @@ const Transactions = () => {
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    if (userID) fetchTransactions();
+  }, [userID]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

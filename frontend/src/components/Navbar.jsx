@@ -3,8 +3,9 @@ import { Link, useLocation } from 'react-router-dom'
 import './Navbar.css'
 
 const Navbar = () => {
-  const location = useLocation()
-  
+  const location = useLocation();
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+
   if (location.pathname === '/') {
     return null
   }
@@ -69,21 +70,30 @@ const Navbar = () => {
           </li>
           <li>
             <Link 
-              to="/manage-users" 
-              className={location.pathname === '/manage-users' ? 'active' : ''}
-            >
-              Manage Users
-            </Link>
-          </li>
-
-          <li>
-            <Link 
               to="/budgets" 
               className={location.pathname === '/budgets' ? 'active' : ''}
             >
               Budgets
             </Link>
           </li>
+          <li>
+            <Link
+              to="/profile"
+              className={location.pathname === '/profile' ? 'active' : ''}
+            >
+              Profile
+            </Link>
+          </li>
+          {isAdmin && (
+            <li>
+              <Link
+                to="/manage-users"
+                className={location.pathname === '/manage-users' ? 'active' : ''}
+              >
+                Manage Users
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

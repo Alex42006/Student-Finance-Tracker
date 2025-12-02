@@ -1,0 +1,59 @@
+.manage-users-container {
+    padding: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+    color: #fff;
+  }
+  
+  .manage-users-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+  }
+  
+  .user-card {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+  
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  
+    /* LEFT-CENTERED look */
+    text-align: left;
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* vertical centering */
+  }
+  
+  .user-email {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .created-at {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 4px;
+  }
+  
+  .delete-user-btn {
+    background: #ff5252;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .delete-user-btn:hover {
+    background: #e64545;
+  }
+  
