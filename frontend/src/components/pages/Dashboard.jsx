@@ -98,7 +98,7 @@ useEffect(() => {
 
         <div className="card subscriptions-card">
           <h3>Upcoming Payments</h3>
-          <p className="card-value">{summary.upcomingPayments}</p>
+          <p className="card-value">${summary.upcomingPayments.toFixed(2)}</p>
           <span className="card-subtitle">Next 7 days</span>
         </div>
 
@@ -110,6 +110,14 @@ useEffect(() => {
               Next Disbursement: {nextDisbursement.toLocaleDateString()}
             </span>
           )}
+        </div>
+
+        <div className="card budget-summary-card">
+          <h3>Budgets</h3>
+          <p className="card-value">
+            {charts.budgets.filter(b => b.spent > b.limit).length}
+          </p>
+          <span className="card-subtitle">Over Budget Categories</span>
         </div>
       </div>
 
@@ -133,37 +141,51 @@ useEffect(() => {
         </div>
 
         <div className="chart-card category-chart">
-          <h3>Spending by Category</h3>
+          <h3>Income by Category</h3>
           <div className="category-list">
-            {charts.categories.map((cat, idx) => (
+            {charts.incomeCategories.map((cat, idx) => (
               <div key={idx} className="category-item">
                 <div className="category-info">
                   <span className="category-name">{cat.name}</span>
                   <span className="category-amount">${cat.amount.toFixed(2)}</span>
                 </div>
                 <div className="category-bar">
-                  <div className="category-fill" style={{ width: `${(cat.amount / charts.totalExpenses) * 100}%`, backgroundColor: cat.color }} />
+                  <div
+                    className="category-fill"
+                    style={{
+                      width: `${(cat.amount / charts.totalIncome) * 100}%`,
+                      backgroundColor: cat.color
+                    }}
+                  />
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="chart-card financial-aid-chart">
-          <h3>Financial Aid Overview</h3>
-          <div className="fa-chart-list">
-            {financialAid.map(fa => (
-              <div key={fa.id} className="fa-chart-item">
-                <div className="fa-chart-header">
-                  <span>{fa.aidType}</span>
-                  <span>${fa.amountAwarded.toFixed(2)}</span>
+        <div className="chart-card budget-chart">
+          <h3>Budgets and Spending</h3>
+          <div className="budget-list">
+            {charts.budgets.map((b, idx) => {
+              const pct = Math.min((b.spent / b.limit) * 100, 100);
+              return (
+                <div key={idx} className="budget-item">
+                  <div className="budget-info">
+                    <span className="budget-name">{b.category}</span>
+                    <span className="budget-amount">
+                      ${b.spent.toFixed(2)} / ${b.limit.toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div className="budget-bar">
+                    <div
+                      className={`budget-fill ${b.spent > b.limit ? "over-budget" : ""}`}
+                      style={{ width: `${pct}%` }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="fa-bar">
-                  <div className="fa-fill" style={{ width: `${(fa.amountAwarded / totalAid) * 100}%` }} />
-                </div>
-                <span className="fa-date">Disbursed: {fa.disbursementDate.split("T")[0]}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -248,7 +270,36 @@ useEffect(() => {
             </tbody>
           </table>
         </div>
-
+        <div className="table-card">
+          <h3>Budget Information</h3>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Limit</th>
+                <th>Spent</th>
+                <th>Remaining</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {charts.budgets.map((b, idx) => {
+                const remaining = b.limit - b.spent;
+                return (
+                  <tr key={idx}>
+                    <td>{b.category}</td>
+                    <td>${b.limit.toFixed(2)}</td>
+                    <td>${b.spent.toFixed(2)}</td>
+                    <td>${remaining.toFixed(2)}</td>
+                    <td className={remaining < 0 ? "negative" : "positive"}>
+                      {remaining < 0 ? "Over" : "Under"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
