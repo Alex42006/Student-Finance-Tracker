@@ -10,7 +10,7 @@ export const LoginSignup = () => {
 
   const [action, setAction] = useState("Register");
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
     name: '',
   });
@@ -27,7 +27,7 @@ export const LoginSignup = () => {
   };
 
   const handleSubmit = async () => {
-    if (!formData.username || !formData.password) {
+    if (!formData.email || !formData.password) {
       setMessage({ type: 'error', text: 'Username and password are required' });
       return;
     }
@@ -45,7 +45,7 @@ export const LoginSignup = () => {
         },
         body: JSON.stringify({
           name: formData.name,
-          username: formData.username,
+          email: formData.email,
           password: formData.password
         })
       });
@@ -58,14 +58,15 @@ export const LoginSignup = () => {
         if (action === "Login") {
           // Store JWT token
           if (data.token) {
-            localStorage.setItem('authToken', data.token);
-            console.log('Login successful! Token stored.');
-            // Redirect to dashboard or home page
-            navigate('/dashboard');
+            localStorage.setItem("authToken", data.token);
+            localStorage.setItem("userID", data.user.id);
+            localStorage.setItem("isAdmin", data.user.isAdmin ? "true" : "false");
+            navigate("/dashboard");
           }
+                 
         } else {
           // After successful signup, switch to login
-          setFormData({ name: '', username: '', password: '' });
+          setFormData({ name: '', email: '', password: '' });
           setTimeout(() => {
             setAction("Login");
             setMessage({ type: '', text: '' });
@@ -99,7 +100,7 @@ export const LoginSignup = () => {
         ) : null}
         <div className="input">
           <img src={userIcon} alt="" />
-          <input type="user" name="username" value={formData.username} onChange={handleInputChange} placeholder="Username"/>
+          <input type="user" name="email" value={formData.email} onChange={handleInputChange} placeholder="Username"/>
         </div>
         <div className="input">
           <img src={passwordIcon} alt="" />

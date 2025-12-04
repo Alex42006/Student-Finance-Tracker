@@ -15,7 +15,7 @@ const FinancialAid = () => {
   const [editingId, setEditingId] = useState(null);
 
   const port = import.meta.env.VITE_BACKEND_PORT;
-  const userID = 1;
+  const userID = Number(localStorage.getItem("userID"));
 
   const fetchFinancialAid = async () => {
     const res = await fetch(
@@ -26,8 +26,8 @@ const FinancialAid = () => {
   };
 
   useEffect(() => {
-    fetchFinancialAid();
-  }, []);
+    if (userID) fetchFinancialAid();
+  }, [userID]);  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

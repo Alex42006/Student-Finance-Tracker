@@ -28,7 +28,11 @@ const getDateRange = (view: string) => {
 
 export const getDashboard = async (req: Request, res: Response) => {
   try {
-    const userID = 1;
+    const userID = Number(req.query.userID);
+    if (!userID) {
+      return res.status(400).json({ error: "Missing userID" });
+    }
+
     const view = (req.query.view as string) || "month";
     const { startDate, endDate } = getDateRange(view);
 
@@ -100,10 +104,13 @@ export const getDashboard = async (req: Request, res: Response) => {
     const nextWeek = new Date();
     nextWeek.setDate(nextWeek.getDate() + 7);
 
-    const upcomingPayments = subscriptions.filter((sub) => {
+    const upcomingPayments = subscriptions
+    .filter((sub) => {
       const nextPayment = getNextPaymentDate(sub.firstPaymentDate, sub.billingCycle);
       return nextPayment <= nextWeek && nextPayment >= new Date();
-    }).length;
+    })
+    .reduce((sum, sub) => sum + Number(sub.amount), 0);
+
 
     const categoryMap = new Map<string, number>();
     filteredTransactions
@@ -120,13 +127,38 @@ export const getDashboard = async (req: Request, res: Response) => {
         color: getCategoryColor(name || "Other"),
       }))
       .sort((a, b) => b.amount - a.amount)
-      .slice(0, 5);    
+      .slice(0, 5);
 
-    const budgetData = categories.map((cat) => ({
-      category: cat.name,
-      limit: cat.amount * 1.5,
-      spent: cat.amount,
-    }));
+      const incomeMap = new Map<string, number>();
+    filteredTransactions
+      .filter((t) => t.type === "income")
+      .forEach((t) => {
+        const current = incomeMap.get(t.category) || 0;
+        incomeMap.set(t.category, current + Number(t.amount));
+      });
+
+    const incomeCategories = Array.from(incomeMap.entries())
+      .map(([name, amount]) => ({
+        name,
+        amount,
+        color: getCategoryColor(name || "Other"),
+      }))
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 5);
+
+      const budgets = await prisma.budget.findMany({
+        where: { userID },
+      });
+      
+      const budgetMap = budgets.map((b) => {
+        const spent = categoryMap.get(b.category) || 0;
+        return {
+          category: b.category,
+          limit: b.limitAmount,
+          spent,
+          period: b.period
+        };
+      });      
 
     const recentTransactions = filteredTransactions
       .sort((a, b) => new Date(b.loggedAt).getTime() - new Date(a.loggedAt).getTime())
@@ -164,8 +196,10 @@ export const getDashboard = async (req: Request, res: Response) => {
         income,
         expenses,
         categories,
+        incomeCategories,
+        totalIncome: income,
         totalExpenses: expenses,
-        budgets: budgetData,
+        budgets: budgetMap
       },
       recentTransactions,
       upcomingSubscriptions,

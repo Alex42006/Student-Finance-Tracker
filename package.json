@@ -23,5 +23,8 @@
   },
   "scripts": {
     "dev": "ts-node ./backend/src/index.ts"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

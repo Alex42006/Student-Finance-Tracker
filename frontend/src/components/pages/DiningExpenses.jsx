@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./Transactions.css";
+import "./DiningExpenses.css";
 
 const DiningExpenses = () => {
   const [amount, setAmount] = useState("");
@@ -7,7 +7,7 @@ const DiningExpenses = () => {
   const [budget, setBudget] = useState("");
 
   const port = import.meta.env.VITE_BACKEND_PORT;
-  const userID = 1;
+  const userID = Number(localStorage.getItem("userID"));
 
   const fetchMonthTotal = async () => {
     try {
@@ -23,8 +23,8 @@ const DiningExpenses = () => {
   };
 
   useEffect(() => {
-    fetchMonthTotal();
-  }, []);
+    if (userID) fetchMonthTotal();
+  }, [userID]);
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -68,19 +68,10 @@ const DiningExpenses = () => {
       : Math.max(0, parseFloat(budget) - monthTotal).toFixed(2);
 
   return (
-    <div className="page-container">
-      <h1 className="page-title">Dining Expenses</h1>
+    <div className="dining-page">
+      <h1 className="dining-title">Dining Expenses</h1>
 
-      <form
-        onSubmit={handleAdd}
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 12,
-          marginBottom: 20,
-          color: "#fff",
-        }}
-      >
+      <form onSubmit={handleAdd} className="dining-form">
         <input
           type="number"
           step="0.01"
@@ -88,7 +79,7 @@ const DiningExpenses = () => {
           value={amount}
           onChange={onAmount}
           min="0"
-          style={inputStyle}
+          className="dining-input"
           required
         />
 
@@ -99,30 +90,22 @@ const DiningExpenses = () => {
           value={budget}
           onChange={onBudget}
           min="0"
-          style={inputStyle}
+          className="dining-input"
         />
 
-        <button type="submit" style={addButton}>
+        <button type="submit" className="dining-submit">
           Add Dining Expense
         </button>
       </form>
 
-      <div
-        style={{
-          background: "rgba(255,255,255,0.15)",
-          padding: "16px 20px",
-          borderRadius: 12,
-          color: "#fff",
-          fontSize: 18,
-        }}
-      >
-        <p style={{ marginBottom: 8 }}>
+      <div className="dining-summary">
+        <p>
           <strong>This month total:</strong> ${monthTotal.toFixed(2)}
         </p>
 
         {budget !== "" ? (
           <>
-            <p style={{ marginBottom: 4 }}>
+            <p>
               <strong>Monthly budget:</strong> ${parseFloat(budget).toFixed(2)}
             </p>
             <p>
@@ -130,33 +113,11 @@ const DiningExpenses = () => {
             </p>
           </>
         ) : (
-          <p style={{ opacity: 0.8 }}>
-            No dining budget set. 
-          </p>
+          <p className="dining-no-budget">No dining budget set.</p>
         )}
       </div>
     </div>
   );
-};
-
-const inputStyle = {
-  padding: "12px",
-  borderRadius: "8px",
-  border: "none",
-  background: "rgba(255,255,255,0.2)",
-  color: "#fff",
-  flex: "1 1 160px",
-};
-
-const addButton = {
-  padding: "12px 20px",
-  borderRadius: "8px",
-  border: "none",
-  background: "#4CAF50",
-  color: "#fff",
-  fontWeight: 600,
-  cursor: "pointer",
-  flex: "1 1 160px",
 };
 
 export default DiningExpenses;

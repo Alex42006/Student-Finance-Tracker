@@ -10,7 +10,7 @@ const Subscriptions = () => {
   const [subscriptions, setSubscriptions] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const port = import.meta.env.VITE_BACKEND_PORT;
-  const userID = 1;
+  const userID = Number(localStorage.getItem("userID"));
 
   const fetchSubscriptions = async () => {
     const res = await fetch(
@@ -21,8 +21,8 @@ const Subscriptions = () => {
   };
 
   useEffect(() => {
-    fetchSubscriptions();
-  }, []);
+    if (userID) fetchSubscriptions();
+  }, [userID]);
 
   const handleAdd = async (e) => {
     e.preventDefault();

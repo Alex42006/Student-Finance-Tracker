@@ -8,11 +8,14 @@ const Budgets = () => {
   const [goalAmount, setGoalAmount] = useState("");
   const [goalDeadline, setGoalDeadline] = useState("");
 
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [allCategories, setAllCategories] = useState([]);
+
   const [budgets, setBudgets] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
   const port = import.meta.env.VITE_BACKEND_PORT;
-  const userID = 1;
+  const userID = Number(localStorage.getItem('userID'));
 
   // Fetch all budgets
   const fetchBudgets = async () => {
@@ -28,8 +31,18 @@ const Budgets = () => {
   };
 
   useEffect(() => {
-    fetchBudgets();
-  }, []);
+    const loadCategories = async () => {
+      const res = await fetch(`http://localhost:${port}/transactions?userID=${userID}`);
+      const data = await res.json();
+      const cats = [...new Set(data.map(t => t.category))].sort();
+      setAllCategories(cats);
+    };
+    if (userID) loadCategories();
+  }, [userID]);
+
+  useEffect(() => {
+    if (userID) fetchBudgets();
+  }, [userID]);  
 
   // ADD new budget
   const handleAdd = async (e) => {
@@ -102,6 +115,10 @@ const Budgets = () => {
     setGoalDeadline("");
   };
 
+  const filteredSuggestions = allCategories.filter(c =>
+    c.toLowerCase().includes(category.toLowerCase())
+  );  
+
   return (
     <div className="budgets-container">
       <h1 className="page-title">Budgets</h1>
@@ -113,14 +130,35 @@ const Budgets = () => {
           onSubmit={editingId ? handleUpdate : handleAdd}
           className="budgets-form"
         >
-          <input
-            type="text"
-            placeholder="Category (e.g., Food)"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-          />
-
+          <div className="category-wrapper">
+            <input
+              type="text"
+              placeholder="Category (e.g., Food)"
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                setShowSuggestions(true);
+              }}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+              required
+            />
+            {showSuggestions && (
+              <ul className="category-suggestions">
+                {(category === "" ? allCategories : filteredSuggestions).map((cat, idx) => (
+                  <li
+                    key={idx}
+                    onMouseDown={() => {
+                      setCategory(cat);
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    {cat}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <input
             type="number"
             placeholder="Budget Limit (e.g., 200)"
